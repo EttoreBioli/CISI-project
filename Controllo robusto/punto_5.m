@@ -26,7 +26,7 @@ CL_campioni = usample(CL_unc, num_campioni);
 CL_nominale = CL_unc.NominalValue;
 
 % 4. Generazione del Disturbo Stradale (Corretto per coincidere con Simulink)
-dt = 0.002; % Abbassato a 2ms per eliminare i warning "undersampled"
+dt = 0.01; % Abbassato a 2ms per eliminare i warning "undersampled"
 t_sim = 0:dt:10;
 varianza_strada = 0.30;
 
