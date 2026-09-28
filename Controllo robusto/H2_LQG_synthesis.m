@@ -101,12 +101,11 @@ disp('Sintesi completata. Controllori K_LQG_noInt e K_LQG_Int pronti per Simulin
 
 
 
-%% 2. Costruzione Impianto Generalizzato per H2 (PESI COSTANTI E 3 MISURE)
-
+%% Costruzione Impianto Generalizzato per H2 
 % -- Pesi sulle Prestazioni (WP) - COSTANTI (Rimaniamo a 4 variabili da ottimizzare) --
 wP1 = 100;    % Peso su accelerazione cassa (zs_ddot) - Comfort
 wP2 = 10;     % Peso su autolivellamento (delta_s)
-wP3 = 1000;   % Peso su tenuta di strada (delta_t) - Vogliamo ottimizzarla anche se non la misuriamo!
+wP3 = 1000;   % Peso su tenuta di strada (delta_t)
 wP4 = 1;      % Peso su accelerazione ruota (zu_ddot)
 
 WP = diag([wP1, wP2, wP3, wP4]);
@@ -149,7 +148,7 @@ P_gen_H2 = connect(P_esteso_nom, WP, Wu, Wn, Sv_zs, Sv_ds, Sv_zu, ...
 % Uscite performance (z): 6 (4 prestazioni + 2 sforzi)
 % Uscite misurate (v): 3    (v_zs, v_ds, v_zu)
 
-NMEAS = 3; % <-- Corretto: 3 sensori letti dal controllore
+NMEAS = 3; % <-- 3 sensori letti dal controllore
 NCONT = 2; % 2 attuatori comandati
 
 [K_H2, CL_H2, gamma_H2] = h2syn(P_gen_H2, NMEAS, NCONT);
@@ -165,15 +164,13 @@ disp(['Sintesi H2 completata. Norma H2 ottima (gamma): ', num2str(gamma_H2)]);
 
 
 
-
-
 %% Analisi in Frequenza: Comfort e Tenuta di Strada
 disp('Generazione Grafici di Bode (Comfort e Tenuta di Strada)...');
 
-% 1. IMPIANTO PASSIVO 
+% IMPIANTO PASSIVO 
 G_passiva = P_esteso_nom({'zs_ddot', 'delta_t'}, 'w_in');
 
-% 2. COSTRUZIONE DEI SISTEMI AD ANELLO CHIUSO (COLLEGAMENTO DIRETTO)
+% COSTRUZIONE DEI SISTEMI AD ANELLO CHIUSO (COLLEGAMENTO DIRETTO)
 G_LQG = connect(P_esteso_nom, K_LQG_Int, 'w_in', {'zs_ddot', 'delta_t'});
 G_H2  = connect(P_esteso_nom, K_H2,      'w_in', {'zs_ddot', 'delta_t'});
 
@@ -213,7 +210,6 @@ mag_lqg_t_dB = 20*log10(squeeze(mag_lqg_t));
 mag_h2_t_dB  = 20*log10(squeeze(mag_h2_t));
 
 % --- Calcolo Risultati e Attenuazioni ---
-% Ricerca indici di picco (Cassa: 4-15 rad/s | Ruota: 40-80 rad/s)
 idx_cassa = find(w_vec > 4 & w_vec < 15);
 idx_ruota = find(w_vec > 40 & w_vec < 80);
 
